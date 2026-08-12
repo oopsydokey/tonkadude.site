@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 70th, TonkaDude</title>
+<style>
+  :root{
+    --deep-navy: #061a2b;
+    --hull-blue: #0b2c47;
+    --panel-blue: #10395c;
+    --steel: #274a68;
+    --brass: #c99a4b;
+    --brass-bright: #e8b95f;
+    --copper: #b3673a;
+    --foam: #dceef5;
+    --paper: #eef4f2;
+    --ok-green: #4caf7d;
+    --danger: #d1573f;
+    --blueprint-line: rgba(220, 238, 245, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background: var(--deep-navy);
+    color: var(--foam);
+    font-family: "Courier New", ui-monospace, "SF Mono", Menlo, monospace;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-image:
+      linear-gradient(var(--blueprint-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--blueprint-line) 1px, transparent 1px),
+      radial-gradient(ellipse at 50% -10%, rgba(232, 185, 95, 0.08), transparent 60%),
+      radial-gradient(ellipse at 50% 110%, rgba(11, 44, 71, 0.9), var(--deep-navy) 70%);
+    background-size: 42px 42px, 42px 42px, 100% 100%, 100% 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 80px;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 760px;
+  }
+
+  /* ---------- HERO / HATCH ---------- */
+
+  .hero {
+    text-align: center;
+    padding: 40px 0 20px;
+  }
+
+  .rivet-frame {
+    border: 2px solid var(--steel);
+    border-radius: 16px;
+    padding: 3px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  }
+
+  .rivet-frame::before {
+    content: "";
+  }
+
+  .eyebrow {
+    letter-spacing: 0.35em;
+    font-size: 0.7rem;
+    color: var(--brass);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  h1.title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2rem, 7vw, 3.4rem);
+    margin: 0 0 8px;
+    color: var(--paper);
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 24px rgba(232, 185, 95, 0.25);
+  }
+
+  .subtitle {
+    color: var(--foam);
+    opacity: 0.75;
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin: 0 auto 36px;
+    line-height: 1.6;
+  }
+
+  .hatch-button {
+    position: relative;
+    width: 190px;
+    height: 190px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 35% 30%, #3a6a91, var(--panel-blue) 55%, var(--hull-blue) 100%);
+    border: 8px solid var(--steel);
+    box-shadow:
+      inset 0 0 0 3px rgba(0,0,0,0.25),
+      0 0 0 4px var(--deep-navy),
+      0 0 0 6px var(--brass),
+      0 12px 30px rgba(0,0,0,0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    animation: pulse 3.2s ease-in-out infinite;
+  }
+
+  .hatch-button:hover {
+    transform: scale(1.04);
+  }
+
+  .hatch-button:active {
+    transform: scale(0.97);
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: inset 0 0 0 3px rgba(0,0,0,0.25), 0 0 0 4px var(--deep-navy), 0 0 0 6px var(--brass), 0 12px 30px rgba(0,0,0,0.5); }
+    50% { box-shadow: inset 0 0 0 3px rgba(0,0,0,0.25), 0 0 0 4px var(--deep-navy), 0 0 0 6px var(--brass-bright), 0 12px 40px rgba(232,185,95,0.35); }
+  }
+
+  .hatch-wheel {
+    width: 92px;
+    height: 92px;
+    opacity: 0.95;
+  }
+
+  .hatch-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brass-bright);
+    margin-top: 4px;
+  }
+
+  .hero.revealed .hatch-button,
+  .hero.revealed .hatch-label {
+    display: none;
+  }
+
+  /* ---------- REVEAL CONTENT ---------- */
+
+  #content {
+    display: none;
+    animation: surface 0.9s ease forwards;
+  }
+
+  #content.show {
+    display: block;
+  }
+
+  @keyframes surface {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel {
+    background: linear-gradient(180deg, rgba(16,57,92,0.65), rgba(6,26,43,0.75));
+    border: 1px solid var(--steel);
+    border-radius: 14px;
+    padding: 26px 24px;
+    margin-bottom: 22px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+
+  .panel::before, .panel::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #d8d8d8, #7a7a7a);
+    top: 10px;
+  }
+  .panel::before { left: 10px; }
+  .panel::after { right: 10px; }
+
+  .panel-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 14px;
+  }
+
+  /* Voucher */
+  .voucher {
+    text-align: center;
+    border-style: double;
+    border-width: 6px;
+    border-color: var(--brass);
+    background: repeating-linear-gradient(135deg, rgba(232,185,95,0.05) 0 12px, transparent 12px 24px), linear-gradient(180deg, rgba(16,57,92,0.75), rgba(6,26,43,0.85));
+  }
+
+  .voucher-amount {
+    font-family: Georgia, serif;
+    font-size: clamp(2.6rem, 10vw, 4.2rem);
+    color: var(--brass-bright);
+    text-shadow: 0 0 20px rgba(232,185,95,0.35);
+    margin: 6px 0 4px;
+  }
+
+  .voucher-sub {
+    font-size: 0.9rem;
+    opacity: 0.85;
+    max-width: 460px;
+    margin: 10px auto 0;
+    line-height: 1.6;
+  }
+
+  .voucher-from {
+    margin-top: 16px;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--foam);
+    opacity: 0.65;
+    font-style: italic;
+  }
+
+  /* Rules */
+  .rules p {
+    margin: 0 0 10px;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+  .rules strong { color: var(--brass-bright); }
+
+  /* Countdown */
+  .countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .countdown-unit {
+    background: rgba(6,26,43,0.6);
+    border: 1px solid var(--steel);
+    border-radius: 10px;
+    padding: 14px 4px;
+    text-align: center;
+  }
+
+  .countdown-num {
+    font-size: clamp(1.5rem, 6vw, 2.3rem);
+    color: var(--paper);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .countdown-unit-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-top: 4px;
+  }
+
+  .deadline-note {
+    text-align: center;
+    font-size: 0.78rem;
+    opacity: 0.7;
+    margin-top: 14px;
+  }
+
+  .countdown-expired {
+    text-align: center;
+    color: var(--danger);
+    font-size: 1.1rem;
+    padding: 10px 0;
+  }
+
+  /* Bucket list */
+  .bucket-heading {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .bucket-heading h2 {
+    font-family: Georgia, serif;
+    font-size: 1.6rem;
+    color: var(--paper);
+    margin: 0 0 6px;
+  }
+
+  .bucket-heading p {
+    opacity: 0.7;
+    font-size: 0.85rem;
+    margin: 0;
+  }
+
+  .bucket-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  .bucket-card {
+    background: linear-gradient(180deg, rgba(16,57,92,0.55), rgba(6,26,43,0.7));
+    border: 1px solid var(--steel);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .bucket-card:hover {
+    border-color: var(--brass);
+    transform: translateY(-3px);
+  }
+
+  .bucket-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+    color: var(--brass-bright);
+  }
+
+  .bucket-card h3 {
+    margin: 0 0 8px;
+    font-family: Georgia, serif;
+    font-size: 1.15rem;
+    color: var(--paper);
+  }
+
+  .bucket-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  .bucket-card .tags {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .bucket-card .tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--copper);
+    border: 1px solid var(--copper);
+    border-radius: 20px;
+    padding: 3px 9px;
+    opacity: 0.85;
+  }
+
+  .bucket-card.more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-style: dashed;
+    opacity: 0.6;
+    font-size: 0.85rem;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.75rem;
+    opacity: 0.5;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="hero" id="hero">
+    <div class="eyebrow">Depth Clearance &middot; Special Occasion</div>
+    <h1 class="title">Happy 70th, TonkaDude</h1>
+    <p class="subtitle">Your crew — every kid and grandkid — has been running something below decks. Turn the wheel to surface it.</p>
+
+    <div class="hatch-button" id="hatchButton" role="button" tabindex="0" aria-label="Open the hatch">
+      <svg class="hatch-wheel" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="10" stroke="#e8b95f" stroke-width="4"/>
+        <circle cx="50" cy="50" r="34" stroke="#e8b95f" stroke-width="4"/>
+        <g stroke="#e8b95f" stroke-width="5" stroke-linecap="round">
+          <line x1="50" y1="16" x2="50" y2="4"/>
+          <line x1="50" y1="84" x2="50" y2="96"/>
+          <line x1="16" y1="50" x2="4" y2="50"/>
+          <line x1="84" y1="50" x2="96" y2="50"/>
+          <line x1="26" y1="26" x2="18" y2="18"/>
+          <line x1="74" y1="74" x2="82" y2="82"/>
+          <line x1="74" y1="26" x2="82" y2="18"/>
+          <line x1="26" y1="74" x2="18" y2="82"/>
+        </g>
+      </svg>
+    </div>
+    <div class="hatch-label">Turn to open</div>
+  </div>
+
+  <div id="content">
+
+    <div class="panel voucher">
+      <div class="panel-label">Ship's Voucher</div>
+      <div class="voucher-amount">$300</div>
+      <div class="voucher-sub">
+        Toward one item on your bucket list — your call which one, no questions asked.
+      </div>
+      <div class="voucher-from">With love, from all your kids and grandkids</div>
+    </div>
+
+    <div class="panel rules">
+      <div class="panel-label">Sailing Orders</div>
+      <p><strong>The catch:</strong> you've got to actually <strong>book something</strong> — a ticket, a tour, a deposit, anything that locks it in.</p>
+      <p><strong>The window:</strong> 70 hours, starting the moment our call begins tonight, <strong>6:30pm Mountain Time, August 13</strong>.</p>
+      <p>That gives you until <strong>4:30pm Mountain Time, August 16</strong>. After that, the hatch closes. No pressure — okay, maybe a little pressure. That's the fun part.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">Time Remaining</div>
+      <div id="countdownLive">
+        <div class="countdown-grid">
+          <div class="countdown-unit"><div class="countdown-num" id="cd-days">--</div><div class="countdown-unit-label">Days</div></div>
+          <div class="countdown-unit"><div class="countdown-num" id="cd-hours">--</div><div class="countdown-unit-label">Hours</div></div>
+          <div class="countdown-unit"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-unit-label">Min</div></div>
+          <div class="countdown-unit"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-unit-label">Sec</div></div>
+        </div>
+      </div>
+      <div class="countdown-expired" id="countdownExpired" style="display:none;">Hatch closed — hope you booked it!</div>
+      <div class="deadline-note">Deadline: 4:30pm MT, August 16, 2026</div>
+    </div>
+
+    <div class="bucket-heading">
+      <h2>Charted Destinations</h2>
+      <p>A few things already on your list. Any of them (or something else entirely) count.</p>
+    </div>
+
+    <div class="bucket-grid" id="bucketGrid"></div>
+
+  </div>
+
+  <footer>Built with love &middot; happy 70th &middot; may the wheel always turn true</footer>
+
+</div>
+
+<script>
+  // ---- Reveal interaction ----
+  const hero = document.getElementById('hero');
+  const hatchButton = document.getElementById('hatchButton');
+  const content = document.getElementById('content');
+
+  function reveal() {
+    hero.classList.add('revealed');
+    content.classList.add('show');
+    content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  hatchButton.addEventListener('click', reveal);
+  hatchButton.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      reveal();
+    }
+  });
+
+  // ---- Countdown ----
+  // Call starts 6:30pm Mountain Time (MDT, UTC-6) on Aug 13, 2026.
+  // Deadline is 70 hours later: 4:30pm MDT on Aug 16, 2026.
+  const deadline = new Date('2026-08-16T16:30:00-06:00');
+
+  const els = {
+    days: document.getElementById('cd-days'),
+    hours: document.getElementById('cd-hours'),
+    mins: document.getElementById('cd-mins'),
+    secs: document.getElementById('cd-secs'),
+  };
+  const liveBlock = document.getElementById('countdownLive');
+  const expiredBlock = document.getElementById('countdownExpired');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    const now = new Date();
+    const diff = deadline - now;
+
+    if (diff <= 0) {
+      liveBlock.style.display = 'none';
+      expiredBlock.style.display = 'block';
+      clearInterval(timer);
+      return;
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+
+    els.days.textContent = days;
+    els.hours.textContent = pad(hours);
+    els.mins.textContent = pad(mins);
+    els.secs.textContent = pad(secs);
+  }
+
+  tick();
+  const timer = setInterval(tick, 1000);
+
+  // ---- Bucket list ----
+  const bucketList = [
+    {
+      title: 'Panama Canal',
+      description: 'Watch massive ships get lifted through the locks — one of the great feats of engineering, still running strong after a century.',
+      tags: ['Engineering', 'Ships'],
+      icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 40h52" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M12 40V28a4 4 0 014-4h32a4 4 0 014 4v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M20 24v-6M32 24v-8M44 24v-6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="4" y="46" width="56" height="6" rx="2" fill="currentColor" opacity="0.5"/></svg>`
+    },
+    {
+      title: "Noah's Ark Museum",
+      description: 'A full-scale ark, built to biblical dimensions — an enormous timber-frame structure worth seeing up close.',
+      tags: ['History', 'Structures'],
+      icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 30l6 18h40l6-18H6z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M14 30V16a2 2 0 012-2h32a2 2 0 012 2v14" stroke="currentColor" stroke-width="3"/><path d="M24 14v16M32 14v16M40 14v16" stroke="currentColor" stroke-width="2.5"/></svg>`
+    }
+  ];
+
+  const grid = document.getElementById('bucketGrid');
+  bucketList.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'bucket-card';
+    card.innerHTML = `
+      <div class="bucket-icon">${item.icon}</div>
+      <h3>${item.title}</h3>
+      <p>${item.description}</p>
+      <div class="tags">${item.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  const moreCard = document.createElement('div');
+  moreCard.className = 'bucket-card more';
+  moreCard.textContent = 'More destinations charted soon — or pick your own.';
+  grid.appendChild(moreCard);
+</script>
+
+</body>
+</html>
