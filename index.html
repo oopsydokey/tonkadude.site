@@ -368,6 +368,87 @@
     font-size: 0.85rem;
   }
 
+  /* Cruise options */
+  .cruise-toggle {
+    margin-top: 14px;
+    background: none;
+    border: 1px solid var(--brass);
+    color: var(--brass-bright);
+    font-family: inherit;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 20px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .cruise-toggle:hover {
+    background: rgba(232, 185, 95, 0.1);
+  }
+
+  .cruise-options {
+    display: none;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--steel);
+  }
+
+  .bucket-card.open .cruise-options {
+    display: block;
+  }
+
+  .cruise-option {
+    background: rgba(6,26,43,0.5);
+    border: 1px solid var(--steel);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+
+  .cruise-option:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .cruise-option .cruise-line {
+    color: var(--paper);
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .cruise-option .cruise-meta {
+    font-size: 0.72rem;
+    opacity: 0.75;
+    line-height: 1.6;
+  }
+
+  .cruise-option .cruise-price {
+    color: var(--brass-bright);
+  }
+
+  .cruise-option a.cruise-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--brass-bright);
+    text-decoration: none;
+    border-bottom: 1px solid var(--copper);
+  }
+
+  .cruise-option a.cruise-link:hover {
+    color: var(--paper);
+  }
+
+  .cruise-disclaimer {
+    font-size: 0.65rem;
+    opacity: 0.55;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
   footer {
     text-align: center;
     margin-top: 30px;
@@ -518,7 +599,36 @@
       title: 'Panama Canal',
       description: 'Watch massive ships get lifted through the locks — one of the great feats of engineering, still running strong after a century.',
       tags: ['Engineering', 'Ships'],
-      icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 40h52" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M12 40V28a4 4 0 014-4h32a4 4 0 014 4v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M20 24v-6M32 24v-8M44 24v-6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="4" y="46" width="56" height="6" rx="2" fill="currentColor" opacity="0.5"/></svg>`
+      icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 40h52" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M12 40V28a4 4 0 014-4h32a4 4 0 014 4v12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M20 24v-6M32 24v-8M44 24v-6" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><rect x="4" y="46" width="56" height="6" rx="2" fill="currentColor" opacity="0.5"/></svg>`,
+      cruiseOptions: [
+        {
+          line: 'Princess Cruises',
+          ship: 'Caribbean Princess',
+          date: 'Oct 30, 2026',
+          duration: '12 nights',
+          ports: 'Ft. Lauderdale → Curaçao → Cartagena → Panama Canal (partial transit) → Puerto Limón → Ft. Lauderdale',
+          price: 'From $1,029/person',
+          url: 'https://www.icruise.com/itineraries/12-night-panama-canal-with-costa-rica-and-caribbean-cruise_caribbean-princess_10-30-2026.html'
+        },
+        {
+          line: 'Holland America Line',
+          ship: 'Nieuw Amsterdam',
+          date: 'Dec 27, 2026',
+          duration: '12 nights',
+          ports: 'Ft. Lauderdale → Half Moon Cay → Aruba → Cartagena → Grand Cayman → Panama Canal (partial transit) → Puerto Limón → Ft. Lauderdale',
+          price: 'From $974/person',
+          url: 'https://www.cruisebound.com/sailing/97380'
+        },
+        {
+          line: 'Norwegian Cruise Line',
+          ship: 'Norwegian Bliss',
+          date: 'Apr 9, 2027',
+          duration: '19 nights',
+          ports: 'New York → Puerto Plata → Cartagena → Panama Canal (full transit) → Costa Rica → Guatemala → Acapulco → Puerto Vallarta → Cabo San Lucas → San Francisco',
+          price: 'From $2,239/person',
+          url: 'https://www.icruise.com/itineraries/19-night-panama-canal-cruise_norwegian-bliss_4-9-2027.html'
+        }
+      ]
     },
     {
       title: "Noah's Ark Museum",
@@ -532,12 +642,43 @@
   bucketList.forEach(item => {
     const card = document.createElement('div');
     card.className = 'bucket-card';
+
+    const hasCruiseOptions = Array.isArray(item.cruiseOptions) && item.cruiseOptions.length > 0;
+
+    const cruiseOptionsHtml = hasCruiseOptions ? `
+      <button type="button" class="cruise-toggle">View cruise options ▾</button>
+      <div class="cruise-options">
+        ${item.cruiseOptions.map(opt => `
+          <div class="cruise-option">
+            <div class="cruise-line">${opt.line} — ${opt.ship}</div>
+            <div class="cruise-meta">
+              ${opt.date} · ${opt.duration}<br>
+              ${opt.ports}<br>
+              <span class="cruise-price">${opt.price}</span>
+            </div>
+            <a class="cruise-link" href="${opt.url}" target="_blank" rel="noopener noreferrer">View &amp; book →</a>
+          </div>
+        `).join('')}
+        <div class="cruise-disclaimer">Prices and dates shown are estimates as of today — click through for current pricing and availability.</div>
+      </div>
+    ` : '';
+
     card.innerHTML = `
       <div class="bucket-icon">${item.icon}</div>
       <h3>${item.title}</h3>
       <p>${item.description}</p>
       <div class="tags">${item.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      ${cruiseOptionsHtml}
     `;
+
+    if (hasCruiseOptions) {
+      const toggleBtn = card.querySelector('.cruise-toggle');
+      toggleBtn.addEventListener('click', () => {
+        const isOpen = card.classList.toggle('open');
+        toggleBtn.textContent = isOpen ? 'Hide cruise options ▴' : 'View cruise options ▾';
+      });
+    }
+
     grid.appendChild(card);
   });
 
