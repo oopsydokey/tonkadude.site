@@ -399,6 +399,13 @@
     display: block;
   }
 
+  .cruise-note {
+    font-size: 0.72rem;
+    opacity: 0.7;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
   .cruise-option {
     background: rgba(6,26,43,0.5);
     border: 1px solid var(--steel);
@@ -634,7 +641,39 @@
       title: "Noah's Ark Museum",
       description: 'A full-scale ark, built to biblical dimensions — an enormous timber-frame structure worth seeing up close.',
       tags: ['History', 'Structures'],
-      icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 30l6 18h40l6-18H6z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M14 30V16a2 2 0 012-2h32a2 2 0 012 2v14" stroke="currentColor" stroke-width="3"/><path d="M24 14v16M32 14v16M40 14v16" stroke="currentColor" stroke-width="2.5"/></svg>`
+      icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 30l6 18h40l6-18H6z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M14 30V16a2 2 0 012-2h32a2 2 0 012 2v14" stroke="currentColor" stroke-width="3"/><path d="M24 14v16M32 14v16M40 14v16" stroke="currentColor" stroke-width="2.5"/></svg>`,
+      optionsLabel: 'tickets & pricing',
+      optionsNote: '1 Ark Encounter Drive, Williamstown, KY · Currently open Mon–Sat 9am–6:30pm, Sun 1–6:30pm ET (hours shift seasonally).',
+      cruiseOptions: [
+        {
+          line: '1-Day Ticket',
+          duration: 'Single-day visit',
+          ports: 'General admission to the Ark Encounter — the full-scale, 510-ft. timber-frame ark and its 3 decks of exhibits.',
+          price: 'From $54.99/adult',
+          url: 'https://arkencounter.com/tickets/'
+        },
+        {
+          line: 'Combo Ticket',
+          duration: 'Single-day visit',
+          ports: 'Ark Encounter + the Creation Museum (45 min away in Petersburg, KY) — one admission to each.',
+          price: 'From $89.99/adult',
+          url: 'https://arkencounter.com/tickets/'
+        },
+        {
+          line: '3-Day Flex Combo',
+          duration: 'Best value',
+          ports: 'Unlimited visits to both parks over any 3 days — good for taking it slow, or bringing the grandkids along.',
+          price: 'From $104.99/adult',
+          url: 'https://arkencounter.com/tickets/'
+        },
+        {
+          line: 'Annual Unlimited Combo',
+          duration: 'For repeat visits',
+          ports: 'Unlimited access to both parks all year, plus free parking.',
+          price: 'From $189.99/adult',
+          url: 'https://arkencounter.com/tickets/'
+        }
+      ]
     },
     {
       title: "Rock 'n' Roll Cruise",
@@ -679,21 +718,27 @@
     card.className = 'bucket-card';
 
     const hasCruiseOptions = Array.isArray(item.cruiseOptions) && item.cruiseOptions.length > 0;
+    const optionsLabel = item.optionsLabel || 'cruise options';
 
     const cruiseOptionsHtml = hasCruiseOptions ? `
-      <button type="button" class="cruise-toggle">View cruise options ▾</button>
+      <button type="button" class="cruise-toggle" data-label="${optionsLabel}">View ${optionsLabel} ▾</button>
       <div class="cruise-options">
-        ${item.cruiseOptions.map(opt => `
+        ${item.optionsNote ? `<div class="cruise-note">${item.optionsNote}</div>` : ''}
+        ${item.cruiseOptions.map(opt => {
+          const title = opt.ship ? `${opt.line} — ${opt.ship}` : opt.line;
+          const metaTop = [opt.date, opt.duration].filter(Boolean).join(' · ');
+          return `
           <div class="cruise-option">
-            <div class="cruise-line">${opt.line} — ${opt.ship}</div>
+            <div class="cruise-line">${title}</div>
             <div class="cruise-meta">
-              ${opt.date} · ${opt.duration}<br>
-              ${opt.ports}<br>
+              ${metaTop ? `${metaTop}<br>` : ''}
+              ${opt.ports ? `${opt.ports}<br>` : ''}
               <span class="cruise-price">${opt.price}</span>
             </div>
             <a class="cruise-link" href="${opt.url}" target="_blank" rel="noopener noreferrer">View &amp; book →</a>
           </div>
-        `).join('')}
+        `;
+        }).join('')}
         <div class="cruise-disclaimer">Prices and dates shown are estimates as of today — click through for current pricing and availability.</div>
       </div>
     ` : '';
@@ -710,7 +755,7 @@
       const toggleBtn = card.querySelector('.cruise-toggle');
       toggleBtn.addEventListener('click', () => {
         const isOpen = card.classList.toggle('open');
-        toggleBtn.textContent = isOpen ? 'Hide cruise options ▴' : 'View cruise options ▾';
+        toggleBtn.textContent = isOpen ? `Hide ${optionsLabel} ▴` : `View ${optionsLabel} ▾`;
       });
     }
 
