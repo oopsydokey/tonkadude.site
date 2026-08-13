@@ -47,8 +47,79 @@
   }
 
   .wrap {
+    position: relative;
+    z-index: 1;
     width: 100%;
     max-width: 760px;
+  }
+
+  /* ---------- AMBIENT SUB EFFECTS ---------- */
+
+  .bubbles {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .bubble {
+    position: absolute;
+    bottom: -10vh;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(220,238,245,0.55), rgba(220,238,245,0.04) 70%);
+    border: 1px solid rgba(220,238,245,0.22);
+    animation: bubbleRise linear infinite;
+  }
+
+  @keyframes bubbleRise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    8% { opacity: 0.55; }
+    92% { opacity: 0.4; }
+    100% { transform: translateY(-115vh) translateX(var(--drift, 20px)); opacity: 0; }
+  }
+
+  .sonar-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--brass-bright);
+    opacity: 0;
+    animation: sonarPing 3.2s ease-out infinite;
+    pointer-events: none;
+  }
+
+  .sonar-ring.delay {
+    animation-delay: 1.6s;
+  }
+
+  @keyframes sonarPing {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  .depth-gauge {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 10;
+    background: rgba(6,26,43,0.72);
+    border: 1px solid var(--brass);
+    color: var(--brass-bright);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 6px 12px;
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  @media (max-width: 420px) {
+    .depth-gauge {
+      font-size: 0.55rem;
+      padding: 5px 9px;
+      top: 8px;
+      right: 8px;
+    }
   }
 
   /* ---------- HERO / HATCH ---------- */
@@ -497,6 +568,9 @@
 </head>
 <body>
 
+<div class="bubbles" id="bubbles"></div>
+<div class="depth-gauge" id="depthGauge">DEPTH: 0 FT</div>
+
 <div class="wrap">
 
   <div class="hero" id="hero">
@@ -505,6 +579,8 @@
     <p class="subtitle">Your crew — every kid and grandkid — has been running something below decks. Turn the wheel to surface it.</p>
 
     <div class="hatch-button" id="hatchButton" role="button" tabindex="0" aria-label="Open the hatch">
+      <div class="sonar-ring"></div>
+      <div class="sonar-ring delay"></div>
       <svg class="hatch-wheel" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="10" stroke="#e8b95f" stroke-width="4"/>
         <circle cx="50" cy="50" r="34" stroke="#e8b95f" stroke-width="4"/>
@@ -569,6 +645,34 @@
 </div>
 
 <script>
+  // ---- Ambient bubbles ----
+  const bubbleContainer = document.getElementById('bubbles');
+  const BUBBLE_COUNT = 18;
+  for (let i = 0; i < BUBBLE_COUNT; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    const size = 6 + Math.random() * 18;
+    const duration = 9 + Math.random() * 10;
+    const delay = -(Math.random() * duration);
+    const drift = (Math.random() * 60 - 30).toFixed(0) + 'px';
+    bubble.style.left = (Math.random() * 100).toFixed(1) + '%';
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.animationDuration = duration.toFixed(1) + 's';
+    bubble.style.animationDelay = delay.toFixed(1) + 's';
+    bubble.style.setProperty('--drift', drift);
+    bubbleContainer.appendChild(bubble);
+  }
+
+  // ---- Depth gauge ----
+  const depthGauge = document.getElementById('depthGauge');
+  function updateDepth() {
+    const depth = Math.round(window.scrollY * 2.2);
+    depthGauge.textContent = `DEPTH: ${depth} FT`;
+  }
+  window.addEventListener('scroll', updateDepth, { passive: true });
+  updateDepth();
+
   // ---- Reveal interaction ----
   const hero = document.getElementById('hero');
   const hatchButton = document.getElementById('hatchButton');
