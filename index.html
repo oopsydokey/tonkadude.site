@@ -307,6 +307,7 @@
   }
 
   .bucket-card {
+    position: relative;
     background: linear-gradient(180deg, rgba(16,57,92,0.55), rgba(6,26,43,0.7));
     border: 1px solid var(--steel);
     border-radius: 12px;
@@ -317,6 +318,35 @@
   .bucket-card:hover {
     border-color: var(--brass);
     transform: translateY(-3px);
+  }
+
+  .bucket-card.completed {
+    border-color: var(--ok-green);
+    opacity: 0.82;
+  }
+
+  .bucket-card.completed:hover {
+    border-color: var(--ok-green);
+  }
+
+  .bucket-card.completed .bucket-icon {
+    color: var(--ok-green);
+  }
+
+  .completed-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: var(--ok-green);
+    color: var(--deep-navy);
+    font-size: 0.62rem;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    transform: rotate(6deg);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.35);
   }
 
   .bucket-icon {
@@ -709,13 +739,20 @@
           url: 'https://monstersofrockcruise.com/pricing-and-availability/'
         }
       ]
+    },
+    {
+      title: 'Redwoods National Forest',
+      description: 'Stood among trees older than the Roman Empire — some pushing 380 feet tall. Bucket list item: officially conquered.',
+      tags: ['Nature', 'Conquered'],
+      completed: true,
+      icon: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 4L20 26h7L14 46h11L16 60h32l-9-14h11L37 26h7L32 4z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M32 60V50" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>`
     }
   ];
 
   const grid = document.getElementById('bucketGrid');
   bucketList.forEach(item => {
     const card = document.createElement('div');
-    card.className = 'bucket-card';
+    card.className = item.completed ? 'bucket-card completed' : 'bucket-card';
 
     const hasCruiseOptions = Array.isArray(item.cruiseOptions) && item.cruiseOptions.length > 0;
     const optionsLabel = item.optionsLabel || 'cruise options';
@@ -744,6 +781,7 @@
     ` : '';
 
     card.innerHTML = `
+      ${item.completed ? '<div class="completed-badge">✓ Completed</div>' : ''}
       <div class="bucket-icon">${item.icon}</div>
       <h3>${item.title}</h3>
       <p>${item.description}</p>
